@@ -7,284 +7,104 @@
 
 <style>
 :root{
-  --bg:#0b0b0d;
-  --card:#15171c;
+  --bg:#0b0d12;
+  --card:#151823;
   --blue:#1e88ff;
-  --text:#ffffff;
+  --text:#fff;
   --muted:#9aa0a6;
-  --green:#3ddc84;
-  --red:#ff5c5c;
 }
-*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  height:100vh;
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,sans-serif}
+body{margin:0;background:var(--bg);color:var(--text);height:100vh}
+.screen{display:none;height:100vh;justify-content:center;align-items:center;padding:20px}
+.screen.active{display:flex}
+.card{width:100%;max-width:380px;background:var(--card);border-radius:20px;padding:24px}
+h2{text-align:center;margin-bottom:16px}
+input,select{
+  width:100%;padding:14px;margin:8px 0;
+  border:none;border-radius:14px;
+  background:#202431;color:#fff
 }
-.hidden{display:none}
-
-/* AUTH */
-.screen{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
+button{
+  width:100%;padding:14px;margin-top:12px;
+  border:none;border-radius:16px;
+  background:var(--blue);color:#fff;font-weight:600
 }
-.card{
-  width:100%;
-  max-width:360px;
-  background:var(--card);
-  padding:24px;
-  border-radius:18px;
-}
-.card h2{text-align:center;margin-bottom:16px}
-.card p{text-align:center;font-size:13px;color:var(--muted)}
-.card input, .card select{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border:none;
-  border-radius:12px;
-  background:#22242a;
-  color:#fff;
-}
-.card button{
-  width:100%;
-  padding:12px;
-  margin-top:12px;
-  border:none;
-  border-radius:14px;
-  background:var(--blue);
-  color:#fff;
-  font-weight:600;
-}
-.switch{
-  text-align:center;
-  margin-top:12px;
-  font-size:13px;
-}
-.switch span{
-  color:var(--blue);
-  cursor:pointer;
-}
+.link{text-align:center;margin-top:12px;font-size:13px;color:var(--muted)}
+.link span{color:var(--blue);cursor:pointer}
 
 /* WALLET */
-.wallet{
-  display:flex;
-  flex-direction:column;
-  height:100vh;
-}
-.header{
-  text-align:center;
-  padding:28px 16px 20px;
-}
-.balance{
-  font-size:36px;
-  font-weight:700;
-}
-.sub{
-  font-size:14px;
-  color:var(--muted);
-}
-.actions{
-  display:flex;
-  justify-content:space-around;
-  padding:10px 16px 18px;
-}
-.action{
-  text-align:center;
-  font-size:13px;
-}
+#wallet{flex-direction:column}
+.header{text-align:center;padding:28px}
+.balance{font-size:36px;font-weight:700}
+.actions{display:flex;justify-content:space-around;padding:10px}
+.action{text-align:center;font-size:13px}
 .action button{
-  width:56px;
-  height:56px;
-  border-radius:50%;
-  border:none;
-  background:var(--blue);
-  color:#fff;
-  font-size:20px;
-  margin-bottom:6px;
-  transition:transform .15s;
+  width:56px;height:56px;border-radius:50%;
+  background:var(--blue);color:#fff;font-size:20px
 }
-.action button:active{transform:scale(.9)}
-
-.tabs{
-  display:flex;
-  border-bottom:1px solid #222;
-}
-.tab{
-  flex:1;
-  text-align:center;
-  padding:12px;
-  color:var(--muted);
-}
-.tab.active{
-  color:#fff;
-  border-bottom:2px solid #fff;
-}
-.list{flex:1;overflow:auto}
-.item{
-  display:flex;
-  justify-content:space-between;
-  padding:14px 16px;
-  border-bottom:1px solid #222;
-}
-.left{display:flex;gap:12px}
-.icon{
-  width:38px;height:38px;border-radius:50%;
-  background:#222;
-  display:flex;align-items:center;justify-content:center;
-  font-weight:700;
-}
-.price{font-size:12px;color:var(--muted)}
-.up{color:var(--green)}
-.down{color:var(--red)}
-
-.nav{
-  display:flex;
-  justify-content:space-around;
-  padding:10px 0;
-  border-top:1px solid #222;
-  background:var(--card);
-}
-.nav button{
-  background:none;border:none;color:var(--muted);font-size:12px
-}
-.nav button.active{color:#fff}
-
-.logout{
-  position:absolute;
-  top:10px;
-  right:12px;
-  background:none;
-  border:none;
-  color:var(--muted);
-}
+.list{flex:1;width:100%}
+.item{display:flex;justify-content:space-between;padding:14px 20px;border-bottom:1px solid #222}
+.nav{display:flex;justify-content:space-around;padding:12px;background:#151823}
+.nav button{background:none;color:var(--muted)}
+.nav .active{color:#fff}
 
 /* MODAL */
 .modal{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:rgba(0,0,0,.6);
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  display:none;justify-content:center;align-items:center
 }
-.modal .card{max-width:380px}
+.modal.active{display:flex}
 </style>
 </head>
 <body>
 
-<!-- REGISTRO -->
-<div id="register" class="screen hidden">
+<!-- AUTH -->
+<section id="auth" class="screen active">
   <div class="card">
-    <h2>Crear cuenta</h2>
-    <input id="regName" placeholder="Nombre y apellidos">
-    <input id="regEmail" type="email" placeholder="Correo electrónico">
-    <input id="regPass" type="password" placeholder="Contraseña">
-    <input id="regPass2" type="password" placeholder="Confirmar contraseña">
-    <button onclick="register()">Registrarse</button>
-    <div class="switch">
-      ¿Ya tienes cuenta? <span onclick="showLogin()">Iniciar sesión</span>
+    <h2 id="authTitle">Crear cuenta</h2>
+    <input id="name" placeholder="Nombre y apellidos">
+    <input id="email" placeholder="Correo electrónico">
+    <input id="pass" type="password" placeholder="Contraseña">
+    <input id="pass2" type="password" placeholder="Confirmar contraseña">
+    <button onclick="submitAuth()">Continuar</button>
+    <div class="link">
+      <span onclick="toggleAuth()">¿Ya tienes cuenta? Iniciar sesión</span>
     </div>
   </div>
-</div>
-
-<!-- LOGIN -->
-<div id="login" class="screen hidden">
-  <div class="card">
-    <h2>Iniciar sesión</h2>
-    <input id="logEmail" type="email" placeholder="Correo electrónico">
-    <input id="logPass" type="password" placeholder="Contraseña">
-    <button onclick="login()">Entrar</button>
-    <div class="switch">
-      ¿Aún no tienes cuenta? <span onclick="showRegister()">Crear cuenta</span>
-    </div>
-  </div>
-</div>
+</section>
 
 <!-- WALLET -->
-<div id="wallet" class="wallet hidden">
-  <button class="logout" onclick="logout()">Cerrar sesión</button>
-
+<section id="wallet" class="screen">
   <div class="header">
     <div id="balance" class="balance">290,18 $</div>
-    <div class="sub">Main</div>
+    <div style="color:var(--muted)">Main</div>
   </div>
 
   <div class="actions">
     <div class="action"><button onclick="openModal('send')">↑</button>Send</div>
     <div class="action"><button onclick="alert('Dirección copiada')">↓</button>Receive</div>
     <div class="action"><button onclick="openModal('buy')">+</button>Buy</div>
-    <div class="action"><button onclick="alert('Swap no disponible')">⇄</button>Swap</div>
-  </div>
-
-  <div class="tabs">
-    <div class="tab active">Tokens</div>
-    <div class="tab">NFTs</div>
+    <div class="action"><button onclick="alert('Swap demo')">⇄</button>Swap</div>
   </div>
 
   <div class="list">
-    <div class="item">
-      <div class="left">
-        <div class="icon">T</div>
-        <div>
-          <div>Tether</div>
-          <div class="price">1,00 $ <span class="down">-0.05%</span></div>
-        </div>
-      </div>
-      <div>
-        <div>290 USDT</div>
-        <div class="price">290,11 $</div>
-      </div>
-    </div>
-
-    <div class="item">
-      <div class="left">
-        <div class="icon">TRX</div>
-        <div>
-          <div>Tron</div>
-          <div class="price">0,06 $ <span class="up">+3.00%</span></div>
-        </div>
-      </div>
-      <div>1 TRX</div>
-    </div>
-
-    <div class="item">
-      <div class="left">
-        <div class="icon">₿</div>
-        <div>
-          <div>Bitcoin</div>
-          <div class="price">22 251,33 $ <span class="up">+1.94%</span></div>
-        </div>
-      </div>
-      <div>0 BTC</div>
-    </div>
-
-    <div class="item">
-      <div class="left">
-        <div class="icon">Ξ</div>
-        <div>
-          <div>Ethereum</div>
-          <div class="price">1 556,93 $ <span class="up">+3.16%</span></div>
-        </div>
-      </div>
-      <div>0 ETH</div>
-    </div>
+    <div class="item"><span>Tether (USDT)</span><span>290</span></div>
+    <div class="item"><span>Tron (TRX)</span><span>1</span></div>
+    <div class="item"><span>Bitcoin</span><span>0</span></div>
+    <div class="item"><span>Ethereum</span><span>0</span></div>
   </div>
 
   <div class="nav">
     <button class="active">Wallet</button>
     <button onclick="alert('Discover')">Discover</button>
     <button onclick="alert('Browser')">Browser</button>
-    <button onclick="alert('Settings')">Settings</button>
+    <button onclick="logout()">Salir</button>
   </div>
-</div>
+</section>
 
 <!-- MODAL -->
-<div id="modal" class="modal hidden">
+<div id="modal" class="modal">
   <div class="card">
     <h2 id="modalTitle"></h2>
     <input id="amount" type="number" placeholder="Monto">
@@ -294,47 +114,38 @@ body{
       <option>TRC20</option>
       <option>ERC20</option>
     </select>
-    <button onclick="confirmAction()">Confirmar</button>
-    <button style="background:#333;margin-top:8px" onclick="closeModal()">Cancelar</button>
+    <button onclick="confirmTx()">Confirmar</button>
+    <button style="background:#333" onclick="closeModal()">Cancelar</button>
   </div>
 </div>
 
 <script>
-const reg=document.getElementById('register');
-const log=document.getElementById('login');
-const wal=document.getElementById('wallet');
-const modal=document.getElementById('modal');
-let currentAction="";
+let isLogin=false;
 
-function init(){
-  const user=localStorage.getItem('user');
-  const session=localStorage.getItem('session');
-  if(session==="on") wal.classList.remove('hidden');
-  else if(user) log.classList.remove('hidden');
-  else reg.classList.remove('hidden');
+function toggleAuth(){
+  isLogin=!isLogin;
+  document.getElementById('authTitle').innerText=isLogin?'Iniciar sesión':'Crear cuenta';
+  document.getElementById('name').style.display=isLogin?'none':'block';
+  document.getElementById('pass2').style.display=isLogin?'none':'block';
 }
 
-function showLogin(){reg.classList.add('hidden');log.classList.remove('hidden')}
-function showRegister(){log.classList.add('hidden');reg.classList.remove('hidden')}
-
-function register(){
-  if(regPass.value!==regPass2.value) return alert("Las contraseñas no coinciden");
-  localStorage.setItem('user',JSON.stringify({
-    name:regName.value,
-    email:regEmail.value,
-    pass:regPass.value,
-    balance:290.18
-  }));
+function submitAuth(){
+  if(isLogin){
+    const u=JSON.parse(localStorage.getItem('user'));
+    if(!u||email.value!==u.email||pass.value!==u.pass) return alert('Credenciales incorrectas');
+  }else{
+    if(pass.value!==pass2.value) return alert('Las contraseñas no coinciden');
+    localStorage.setItem('user',JSON.stringify({
+      name:name.value,email:email.value,pass:pass.value,balance:290.18
+    }));
+  }
   localStorage.setItem('session','on');
-  location.reload();
+  showWallet();
 }
 
-function login(){
-  const u=JSON.parse(localStorage.getItem('user'));
-  if(logEmail.value===u.email && logPass.value===u.pass){
-    localStorage.setItem('session','on');
-    location.reload();
-  }else alert("Credenciales incorrectas");
+function showWallet(){
+  auth.classList.remove('active');
+  wallet.classList.add('active');
 }
 
 function logout(){
@@ -343,24 +154,23 @@ function logout(){
 }
 
 function openModal(type){
-  currentAction=type;
-  modal.classList.remove('hidden');
-  modalTitle.innerText=type==="send"?"Enviar cripto":"Agregar monto";
+  modal.classList.add('active');
+  modalTitle.innerText=type==='send'?'Enviar cripto':'Agregar fondos';
 }
 
-function closeModal(){modal.classList.add('hidden')}
+function closeModal(){modal.classList.remove('active')}
 
-function confirmAction(){
+function confirmTx(){
   let u=JSON.parse(localStorage.getItem('user'));
-  let amt=parseFloat(amount.value);
-  if(currentAction==="buy") u.balance+=amt;
-  if(currentAction==="send") u.balance-=amt;
+  let amt=parseFloat(amount.value||0);
+  if(modalTitle.innerText.includes('Agregar')) u.balance+=amt;
+  else u.balance-=amt;
   localStorage.setItem('user',JSON.stringify(u));
-  document.getElementById('balance').innerText=u.balance.toFixed(2)+" $";
+  balance.innerText=u.balance.toFixed(2)+' $';
   closeModal();
 }
 
-init();
+if(localStorage.getItem('session')==='on') showWallet();
 </script>
 </body>
-  </html>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Crypto Wallet</title>
+  <style>
+    :root{
+      --bg:#0e0e0e;
+      --card:#161616;
+      --blue:#1e88ff;
+      --text:#ffffff;
+      --muted:#9aa0a6;
+      --green:#4caf50;
+      --red:#e53935;
+    }
+    *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      height:100vh;
+    }
+    .hidden{display:none;}
+    .center{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      height:100vh;
+      padding:20px;
+    }
+    .auth{
+      width:100%;
+      max-width:360px;
+      background:var(--card);
+      padding:24px;
+      border-radius:16px;
+    }
+    .auth h2{text-align:center;margin-bottom:20px;}
+    .auth input{
+      width:100%;
+      padding:12px;
+      margin-bottom:12px;
+      border:none;
+      border-radius:10px;
+      background:#222;
+      color:#fff;
+    }
+    .auth button{
+      width:100%;
+      padding:12px;
+      border:none;
+      border-radius:12px;
+      background:var(--blue);
+      color:#fff;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    /* WALLET */
+    .wallet{
+      display:flex;
+      flex-direction:column;
+      height:100vh;
+    }
+    .top{
+      text-align:center;
+      padding:30px 16px 20px;
+    }
+    .balance{
+      font-size:36px;
+      font-weight:700;
+    }
+    .sub{
+      font-size:14px;
+      color:var(--muted);
+    }
+    .actions{
+      display:flex;
+      justify-content:space-around;
+      padding:10px 16px 20px;
+    }
+    .action{
+      text-align:center;
+      color:#fff;
+      font-size:13px;
+    }
+    .action button{
+      width:54px;
+      height:54px;
+      border-radius:50%;
+      border:none;
+      background:var(--blue);
+      color:#fff;
+      font-size:20px;
+      margin-bottom:6px;
+      cursor:pointer;
+      transition:transform .15s;
+    }
+    .action button:active{transform:scale(0.9);}
+
+    .tabs{
+      display:flex;
+      padding:0 16px;
+      border-bottom:1px solid #222;
+    }
+    .tab{
+      flex:1;
+      text-align:center;
+      padding:12px;
+      color:var(--muted);
+    }
+    .tab.active{
+      color:#fff;
+      border-bottom:2px solid #fff;
+    }
+
+    .list{
+      flex:1;
+      overflow:auto;
+    }
+    .item{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:14px 16px;
+      border-bottom:1px solid #222;
+    }
+    .left{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .icon{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      background:#222;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+    }
+    .name{font-weight:600;}
+    .price{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .right{text-align:right;}
+    .up{color:var(--green);}
+    .down{color:var(--red);}
+
+    .nav{
+      display:flex;
+      justify-content:space-around;
+      padding:10px 0;
+      border-top:1px solid #222;
+      background:var(--card);
+    }
+    .nav button{
+      background:none;
+      border:none;
+      color:var(--muted);
+      font-size:12px;
+      cursor:pointer;
+    }
+    .nav button.active{color:#fff;}
+    .logout{
+      position:absolute;
+      top:10px;
+      right:10px;
+      background:none;
+      border:none;
+      color:var(--muted);
+      font-size:12px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+<!-- REGISTRO -->
+<div id="register" class="center hidden">
+  <div class="auth">
+    <h2>Registro</h2>
+    <input id="regEmail" type="email" placeholder="Email">
+    <input id="regPass" type="password" placeholder="Contraseña">
+    <button onclick="register()">Registrarse</button>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="login" class="center hidden">
+  <div class="auth">
+    <h2>Iniciar sesión</h2>
+    <input id="logEmail" type="email" placeholder="Email">
+    <input id="logPass" type="password" placeholder="Contraseña">
+    <button onclick="login()">Entrar</button>
+  </div>
+</div>
+
+<!-- WALLET -->
+<div id="wallet" class="wallet hidden">
+  <button class="logout" onclick="logout()">Cerrar sesión</button>
+  <div class="top">
+    <div class="balance">290,18 $</div>
+    <div class="sub">Main</div>
+  </div>
+
+  <div class="actions">
+    <div class="action"><button onclick="act('Send')">↑</button>Send</div>
+    <div class="action"><button onclick="act('Receive')">↓</button>Receive</div>
+    <div class="action"><button onclick="act('Buy')">🏷</button>Buy</div>
+    <div class="action"><button onclick="act('Swap')">⇄</button>Swap</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active">Tokens</div>
+    <div class="tab">NFTs</div>
+  </div>
+
+  <div class="list">
+    <div class="item">
+      <div class="left">
+        <div class="icon">T</div>
+        <div>
+          <div class="name">Tether</div>
+          <div class="price">1,00 $ <span class="down">-0.05%</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <div>290 USDT</div>
+        <div class="price">290,11 $</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="left">
+        <div class="icon">TRX</div>
+        <div>
+          <div class="name">Tron</div>
+          <div class="price">0,06 $ <span class="up">+3.00%</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <div>1 TRX</div>
+        <div class="price">0,06 $</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="left">
+        <div class="icon">₿</div>
+        <div>
+          <div class="name">Bitcoin</div>
+          <div class="price">22 251,33 $ <span class="up">+1.94%</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <div>0 BTC</div>
+      </div>
+    </div>
+
+    <div class="item">
+      <div class="left">
+        <div class="icon">Ξ</div>
+        <div>
+          <div class="name">Ethereum</div>
+          <div class="price">1 556,93 $ <span class="up">+3.16%</span></div>
+        </div>
+      </div>
+      <div class="right">
+        <div>0 ETH</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <button class="active" onclick="nav('Wallet')">Wallet</button>
+    <button onclick="nav('Discover')">Discover</button>
+    <button onclick="nav('Browser')">Browser</button>
+    <button onclick="nav('Settings')">Settings</button>
+  </div>
+</div>
+
+<script>
+  const reg = document.getElementById('register');
+  const log = document.getElementById('login');
+  const wal = document.getElementById('wallet');
+
+  function init(){
+    const user = localStorage.getItem('user');
+    const session = localStorage.getItem('session');
+    if(session === 'on') wal.classList.remove('hidden');
+    else if(user) log.classList.remove('hidden');
+    else reg.classList.remove('hidden');
+  }
+
+  function register(){
+    const email = regEmail.value;
+    const pass = regPass.value;
+    if(!email || !pass) return alert('Completa los datos');
+    localStorage.setItem('user', JSON.stringify({email,pass}));
+    localStorage.setItem('session','on');
+    location.reload();
+  }
+
+  function login(){
+    const data = JSON.parse(localStorage.getItem('user'));
+    if(logEmail.value === data.email && logPass.value === data.pass){
+      localStorage.setItem('session','on');
+      location.reload();
+    } else alert('Credenciales incorrectas');
+  }
+
+  function logout(){
+    localStorage.removeItem('session');
+    location.reload();
+  }
+
+  function act(a){alert(a + ' action');}
+  function nav(n){alert(n);}
+
+  init();
+</script>
+</body>
+</html>
